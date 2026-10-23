@@ -20,11 +20,15 @@ DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 def make_llm(max_tokens: int):
     model = os.environ.get("GROQ_MODEL", DEFAULT_MODEL).strip().strip("\"'")
-    model = model.removeprefix("groq/")  # tolerate "groq/..." in the env var
+    model = model.removeprefix("groq/")
+    extra = {}
+    if "gpt-oss" in model:
+        extra["reasoning_effort"] = "low"
     return LLM(
         model=f"groq/{model}",
         api_key=os.environ.get("GROQ_API_KEY"),
-        max_tokens=max_tokens,
+        max_tokens=max_tokens * 2,
+        **extra,
     )
 
 
