@@ -18,30 +18,19 @@ from scraper import WebScraperTool
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
-class TextToolsLLM(LLM):
-    """Use CrewAI's text-based tool calling. Groq's native tool API breaks gpt-oss."""
-
-    def supports_function_calling(self) -> bool:
-        return False
-
-
 def make_llm(max_tokens: int):
     model = os.environ.get("GROQ_MODEL", DEFAULT_MODEL).strip().strip("\"'")
     model = model.removeprefix("groq/")
-    extra = {}
-    if "gpt-oss" in model:
-        extra["reasoning_effort"] = "low"
-    return TextToolsLLM(
+    return LLM(
         model=f"groq/{model}",
         api_key=os.environ.get("GROQ_API_KEY"),
         max_tokens=max_tokens,
-        **extra,
     )
 
 
-researcher_llm = make_llm(1000)
-analyst_llm = make_llm(1000)
-writer_llm = make_llm(1800)
+researcher_llm = make_llm(1200)
+analyst_llm = make_llm(1500)
+writer_llm = make_llm(2500)
 
 NO_TOOLS = "You have NO tools. Do not call any tool or function. Respond with plain text only."
 
