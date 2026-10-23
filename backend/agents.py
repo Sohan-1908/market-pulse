@@ -15,9 +15,14 @@ from crewai import Agent, Task, Crew, Process, LLM
 from scraper import WebScraperTool
 
 
+DEFAULT_MODEL = "openai/gpt-oss-120b"
+
+
 def make_llm(max_tokens: int):
+    model = os.environ.get("GROQ_MODEL", DEFAULT_MODEL).strip().strip("\"'")
+    model = model.removeprefix("groq/")  # tolerate "groq/..." in the env var
     return LLM(
-        model=f"groq/{os.environ.get('GROQ_MODEL', 'llama3-70b-8192')}",
+        model=f"groq/{model}",
         api_key=os.environ.get("GROQ_API_KEY"),
         max_tokens=max_tokens,
     )
