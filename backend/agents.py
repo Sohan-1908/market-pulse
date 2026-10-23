@@ -23,18 +23,18 @@ def make_llm(max_tokens: int):
     model = model.removeprefix("groq/")
     extra = {}
     if "gpt-oss" in model:
-        extra["reasoning_effort"] = "low"
+        extra["reasoning_effort"] = "low"  # less hidden thinking, so the answer isn't cut off
     return LLM(
         model=f"groq/{model}",
         api_key=os.environ.get("GROQ_API_KEY"),
-        max_tokens=max_tokens * 2,
+        max_tokens=max_tokens,  # no multiplier: Groq counts this against your limits
         **extra,
     )
 
 
-researcher_llm = make_llm(1200)
-analyst_llm = make_llm(1500)
-writer_llm = make_llm(2500)
+researcher_llm = make_llm(1000)
+analyst_llm = make_llm(1000)
+writer_llm = make_llm(1800)
 
 NO_TOOLS = "You have NO tools. Do not call any tool or function. Respond with plain text only."
 
