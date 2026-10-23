@@ -17,7 +17,7 @@ from scraper import WebScraperTool
 
 def make_llm(max_tokens: int):
     return LLM(
-        model=f"groq/{os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')}",
+        model=f"groq/{os.environ.get('GROQ_MODEL', 'llama-3.1-8b-instant')}",
         api_key=os.environ.get("GROQ_API_KEY"),
         drop_params=True,
         max_tokens=max_tokens,
