@@ -4,12 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import crewai.llms.cache as _cache
+# Safely handle cache import across different CrewAI versions / LLM providers
+try:
+    import crewai.llms.cache as _cache
+    _cache.mark_cache_breakpoint = lambda message: message
+except (ImportError, ModuleNotFoundError, AttributeError):
+    _cache = None
+
 from crewai import Agent, Task, Crew, Process, LLM
 from scraper import WebScraperTool
-
-# Groq rejects the "cache_breakpoint" key, so make the marker a no-op
-_cache.mark_cache_breakpoint = lambda message: message
 
 
 def make_llm(max_tokens: int):
