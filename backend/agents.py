@@ -18,16 +18,23 @@ from scraper import WebScraperTool
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
+class TextToolsLLM(LLM):
+    """Use CrewAI's text-based tool calling. Groq's native tool API breaks gpt-oss."""
+
+    def supports_function_calling(self) -> bool:
+        return False
+
+
 def make_llm(max_tokens: int):
     model = os.environ.get("GROQ_MODEL", DEFAULT_MODEL).strip().strip("\"'")
     model = model.removeprefix("groq/")
     extra = {}
     if "gpt-oss" in model:
-        extra["reasoning_effort"] = "low"  # less hidden thinking, so the answer isn't cut off
-    return LLM(
+        extra["reasoning_effort"] = "low"
+    return TextToolsLLM(
         model=f"groq/{model}",
         api_key=os.environ.get("GROQ_API_KEY"),
-        max_tokens=max_tokens,  # no multiplier: Groq counts this against your limits
+        max_tokens=max_tokens,
         **extra,
     )
 
